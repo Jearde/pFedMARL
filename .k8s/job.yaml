@@ -31,7 +31,7 @@ spec:
       
       containers:
         - name: pytorch
-          image: harbor.ika.rub.de/library/pfedmarl:latest # Change this
+          image: pfedmarl:latest # Change this
 
           # For running a script, use the following command (recommended)
           command: ["/bin/bash", "-c"]

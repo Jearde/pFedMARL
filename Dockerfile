@@ -7,7 +7,7 @@ ARG BASE_CONTAINER=nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
 
 FROM $BASE_CONTAINER
 
-LABEL maintainer="pFedMARL: Personalized Federated Learning with Multi-Agent Off-Policy Reinforcement Learning <rene.glitza@rub.de>"
+LABEL maintainer="pFedMARL: Personalized Federated Learning with Multi-Agent Off-Policy Reinforcement Learning"
 
 # environment settings
 ENV DEBIAN_FRONTEND=noninteractive
