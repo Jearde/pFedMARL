@@ -1,0 +1,17 @@
+{
+    "python.defaultInterpreterPath": "/env/bin/python",
+    "python.analysis.indexing": true,
+    "python.analysis.autoImportCompletions": true,
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit",
+        },
+    },
+    "cSpell.words": [
+        "DCASE",
+    ],
+    "mypy-type-checker.cwd": "${workspaceFolder}/src",
+}

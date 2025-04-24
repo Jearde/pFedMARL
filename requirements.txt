@@ -1,0 +1,68 @@
+# PyTorch
+--extra-index-url https://download.pytorch.org/whl/nightly/cu128
+--pre torch
+--pre torchaudio
+--pre torchvision
+torchinfo
+torchmetrics
+lightning[extra]
+kornia
+gymnasium
+tensordict-nightly
+torchrl-nightly
+vmas
+
+# Experiment logging
+tensorboard
+# tb-nightly # For Numpy v2
+torch-tb-profiler
+tbparse
+opencv-python-headless
+mlflow
+dagshub
+dvc
+psutil
+pynvml
+optuna
+optuna-integration
+optuna-dashboard
+optuna-fast-fanova
+gunicorn
+psycopg2-binary
+dvclive
+
+# Data processing
+nvidia-pyindex
+nvidia-dali-cuda120
+nvidia-dlprof[pytorch] # dlprof <args> [training_script.py]
+
+# Data CPU processing
+numpy >= 2.0.0
+scikit-learn
+umap-learn
+
+# Plotting
+matplotlib
+seaborn
+plotly
+ipympl
+adjustText 
+PyQt5
+
+# Pretty printing
+tqdm
+typer
+jupyter
+rich
+
+# Data and code validation
+mypy
+pydantic
+pydantic-yaml
+
+# DCASE Moules
+fasteners
+librosa
+
+# SONYC
+zenodo-get

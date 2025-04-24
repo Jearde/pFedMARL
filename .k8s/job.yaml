@@ -1,0 +1,86 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pfedmarl
+  # namespace: user # Change this
+spec:
+  ttlSecondsAfterFinished: 1800
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      name: pytorch
+    spec:
+      restartPolicy: Never
+      runtimeClassName: nvidia
+
+      # imagePullSecrets:
+      # - name: regcred
+      
+      volumes:
+      - name: local-storage
+        emptyDir: {}
+      - name: ram-storage
+        emptyDir:
+          medium: Memory
+      - name: shared-mem
+        emptyDir:
+          sizeLimit: 4Gi # 2 GB are usually sufficient, use more if need be
+          medium: Memory
+
+      
+      containers:
+        - name: pytorch
+          image: harbor.ika.rub.de/library/pfedmarl:latest # Change this
+
+          # For running a script, use the following command (recommended)
+          command: ["/bin/bash", "-c"]
+          args: 
+          - |
+            pip install -q -r /workspace/requirements.txt;
+            python /workspace/src/main.py create-config;
+            torchrun /workspace/src/main.py tune /workspace/.config/example_config.yaml --n-trials 5;
+
+          
+          # For debugging, use the following command
+          # command: ["/bin/bash", "-c"]
+          # args: 
+          # - |
+          #   pip install -r /workspace/requirements.txt;
+          #   /docker-entrypoint.sh;
+          #   tail -f /dev/null;
+
+          
+          imagePullPolicy: Always # Always, IfNotPresent
+          
+          env:
+          - name: OMP_NUM_THREADS  # Can be tuned for optimal performance
+            value: "1"
+          
+          resources:
+            limits:
+              nvidia.com/gpu: "1"
+          
+          volumeMounts:
+          - name: shared-mem
+            mountPath: /dev/shm
+          - name: local-storage
+            mountPath: /mnt/data
+
+      
+      affinity:
+        nodeAffinity:
+          # What is required as a minimum
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/cuda.runtime-version.full
+                operator: In
+                values:
+                - "12.8"
+                - "12.7"
+                - "12.6"
+                - "12.5"
+                - "12.4"
+                - "12.3"
+                - "12.2"
