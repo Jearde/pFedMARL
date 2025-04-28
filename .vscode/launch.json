@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File with Arguments",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            // "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
+            // "env": {
+            //     "PYTHONPATH": "${cwd}/src"
+            // },
+            "console": "integratedTerminal",
+            //"args": "${command:pickArgs}"
+            // "args": [
+            //     "train",
+            //     ".config/example_config.yaml",
+            // ],
+            "justMyCode": false
+        },
+        {
+            "name": "Create example config",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "create-config",
+            ]
+        },
+        {
+            "name": "RL with example config",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "rl",
+                ".config/example_config.yaml",
+            ]
+        },
+    ]
+}
