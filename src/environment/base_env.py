@@ -384,7 +384,6 @@ class BaseFLEnv(EnvBase):
         return results, results_fine
 
     def get_observation_dict(self, group_data, group, prefix=""):
-        # TODO: Better to return original, because this can be normalized
         return_dict = {}
 
         if group in group_data and "action" in group_data[group]:

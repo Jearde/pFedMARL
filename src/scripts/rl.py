@@ -7,34 +7,42 @@ from torchrl.envs.transforms import InitTracker, RewardSum
 from config.config_model import Config, parse_config
 from environment.baseline import BaselineEnv
 from environment.fed_sgd import FedSGDEnv
+from environment.global_personal import GlobalLocalFederatedEnv
 from reinforcement_learning.td3.td3 import TD3Module
 from utils.lightning_utils import init_callbacks_plugins, init_seeds, init_trainer
 from utils.logger import init_logger
 
 logger = logging.getLogger("lightning.pytorch")
-logging.getLogger("lightning").setLevel(logging.ERROR)
+logging.getLogger("lightning").setLevel(logging.INFO)
 
 
 def rl_train(
     type_to_run: str = "debug",
-    config_path: Path | str | None = None,
+    config_path: Path | None = None,
     config: Config | None = None,
-    extra_callbacks: list | None = None,
 ):
     if config is None and config_path is not None:
         config = parse_config(config_path)
     elif config is None and config_path is None:
         raise ValueError("Either config or config_path must be provided.")
 
+    type_to_run = config.rl.environment_name
     init_seeds(config.seed)
 
-    if type_to_run == "baseline":
-        env = BaselineEnv.make_env(
+    if type_to_run == "maddpg_global_local":
+        env = GlobalLocalFederatedEnv.make_env(
+            config_path=config_path,
             config=config,
             **config.rl.environment_config.model_dump(),
         )
-    elif type_to_run == "fedavg":
+    elif type_to_run == "maddpg_fed_sgd":
         env = FedSGDEnv.make_env(
+            config=config,
+            **config.rl.environment_config.model_dump(),
+        )
+
+    elif type_to_run == "baseline":
+        env = BaselineEnv.make_env(
             config=config,
             **config.rl.environment_config.model_dump(),
         )
@@ -63,16 +71,15 @@ def rl_train(
             f"Environment {type_to_run} is not supported. Supported environments: maddpg_global_local, maddpg_fed_sgd, debug"
         )
 
+    # %%
     rl_module = TD3Module(env=env, **config.rl.algorithm_config.model_dump())
 
-    logger_list, model_checkpoint_path = init_logger(
+    # %%
+    logger_list = init_logger(
         **config.rl.logger_config.model_dump(),
-        config_path=config.config_path,
     )
     callbacks, plugins = init_callbacks_plugins(
         **config.rl.callback_config.model_dump(),
-        model_checkpoint_path=model_checkpoint_path,
-        extra_callbacks=extra_callbacks,
     )
     trainer = init_trainer(
         callbacks, plugins, logger_list, **config.rl.trainer_config.model_dump()

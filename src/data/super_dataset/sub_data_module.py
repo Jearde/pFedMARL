@@ -5,7 +5,6 @@ import lightning as L
 import torch
 from torch.utils.data import DataLoader, random_split
 
-from data.dali_loader.dali_numpy_external_loader import DaliNumpyExternalPipeline
 from data.dali_loader.dali_wav_loader import DaliAudioPipeline
 
 logger = logging.getLogger(__name__)
@@ -135,8 +134,6 @@ class SuperDataModule(L.LightningDataModule):
 
         if sample_file_path.endswith(".wav"):
             pipeline_class = DaliAudioPipeline
-        elif sample_file_path.endswith(".npy"):
-            pipeline_class = DaliNumpyExternalPipeline
         else:
             logger.error(f"Unknown file format: {sample_file_path}")
             return None

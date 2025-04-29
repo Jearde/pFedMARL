@@ -1,4 +1,3 @@
-import os
 from typing import List
 
 import lightning as pl
@@ -225,55 +224,3 @@ class WavDataModule(pl.LightningDataModule):
         )
 
         return dali_iterator
-
-
-# Example usage with PyTorch Lightning DataModule
-if __name__ == "__main__":
-    from pathlib import Path
-
-    from tqdm.auto import tqdm
-
-    current_dir = Path(__file__).resolve().parent
-
-    # A list of paths to WAV files
-    file_list = [
-        str(f) for f in Path("/mnt/nfs/datasets/audioset/eval/Speech").glob("*.wav")
-    ]
-    label_lists = [[0, 1] * len(file_list)]  # A list of labels for each file
-
-    batch_size = 256
-
-    target_sr = 16000
-    target_length = 10
-
-    num_threads = os.cpu_count()
-    shuffle = True
-    device_id = torch.cuda.current_device() if torch.cuda.is_available() else -1
-    num_gpus = torch.cuda.device_count()
-
-    dali_iterator = DaliAudioPipeline(
-        files=file_list,
-        labels=label_lists,
-        batch_size=batch_size,
-        target_sr=target_sr,
-        target_length=target_length,
-        num_threads=num_threads,
-        shuffle=shuffle,
-        local_rank=device_id,
-        global_rank=device_id,
-        world_size=num_gpus,
-        random_crop_size=3.14315,
-        start_sec=None,
-    )
-
-    # Iterate over the DataLoader
-    for epoch in range(5):
-        for batch_idx, batch in enumerate(
-            tqdm(dali_iterator, total=len(dali_iterator), desc=f"Epoch {epoch}")
-        ):
-            audio = batch[0]
-            label = batch[1]
-
-            if epoch == 0 and batch_idx == 0:
-                print(f"audio: {audio.shape}, label: {label.shape}")
-                print(f"Device: {audio.device}, {label.device}")

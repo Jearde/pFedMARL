@@ -1,6 +1,5 @@
 import logging
 
-import lightning as L
 import torch
 from tensordict import TensorDict
 
@@ -9,10 +8,6 @@ from federated_learning.device import Device
 from federated_learning.server import Server
 
 from .base_fl_env import BaseFederatedEnv
-
-# Set the logging level to ERROR to suppress lower-level logs
-logging.getLogger("lightning.pytorch").setLevel(logging.ERROR)
-L.__version__
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -49,8 +44,7 @@ class BaselineEnv(BaseFederatedEnv):
             action = action.to(device.model.device)
             device.save_old_model()
             device.load_model(self.global_model)
-            # self._client_agg(device, action, self.global_model)
-            device.sync_W_to_active()  # This might also cause problems
+            device.sync_W_to_active()
 
     def _step(self, tensordict: TensorDict) -> TensorDict:
         step_td = TensorDict()
@@ -92,7 +86,6 @@ class BaselineEnv(BaseFederatedEnv):
                 # Train the models
                 if hasattr(device, "fit"):
                     pass
-                    # device.fit()  # This causes the gradient stacking error
                 else:
                     self.clients[0].load_model(self.global_model)
                     self.clients[0].save_old_model()

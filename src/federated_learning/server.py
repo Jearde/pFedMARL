@@ -15,42 +15,6 @@ class Server(Device):
             self.init_callbacks_plugins()
         self.init_trainer(enable_model_summary=self.enable_model_summary)
 
-    # def log_clients_hparams(self, client_results: list[list[dict]]):
-    #     results = {}
-    #     # Merge all client results
-    #     for client_result in client_results:
-    #         for result in client_result:
-    #             for key, value in result.items():
-    #                 if key not in results:
-    #                     results[key] = []
-    #                 results[key].append(value)
-
-    #     # Create mean of each metric
-    #     for key, value in results.items():
-    #         results[key] = sum(value) / len(value)
-
-    #     self.log_hparams(results)
-
-    # def aggregate_models(self, clients: list[Client]) -> dict:
-    #     client_models, server_model = self.aggregator.aggregate(clients)
-
-    #     for client, aggregated_model in zip(clients, client_models):
-    #         client.model.load_state_dict(aggregated_model)
-
-    #     self.model.load_state_dict(server_model)
-
-    # def aggregate_weighted_models(
-    #     self, clients: list[Client], weights: list[dict[float]]
-    # ) -> dict:
-    #     server_model = self.default_aggregator.aggregate(clients, weights)
-
-    #     self.model.load_state_dict(server_model, strict=False)
-
-    #     for client in clients:
-    #         client.model.load_state_dict(server_model, strict=False)
-
-    #     return server_model
-
     def get_similarity_and_norm(
         self,
         source_dict: dict,

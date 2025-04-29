@@ -34,16 +34,6 @@ class AgentModel(BaseModel):
     num_cells_critic: int | list[int] = 256
 
 
-class DDPGLossModel(BaseModel):
-    gamma: float = 0.99
-    lmbda: float | None = None
-    polyak_tau: float = 0.99
-    actor_lr: float = 4e-4
-    critic_lr: float = 3e-3
-    actor_weight_decay: float = 0.0
-    critic_weight_decay: float = 1e-2
-
-
 class TD3LossModel(BaseModel):
     gamma: float = 0.82
     lmbda: float | None = 0.67
@@ -90,7 +80,7 @@ class MADDPGModel(BaseModel):
     policy_update_delay: int = 2
     perform_validation: bool = False
     agent_config: AgentModel = AgentModel()
-    loss_config: DDPGLossModel | TD3LossModel = DDPGLossModel()
+    loss_config: TD3LossModel = TD3LossModel()
     collector_config: CollectorModel = CollectorModel()
     buffer_config: BufferModel = BufferModel()
 

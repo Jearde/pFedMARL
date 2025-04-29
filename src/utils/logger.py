@@ -8,7 +8,8 @@ import torchaudio
 import torchmetrics
 import torchvision
 
-logger = logging.getLogger("lightning.pytorch")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 def print_stats():
@@ -55,7 +56,6 @@ def flatten_dict(dd, separator="_", prefix=""):
         elif isinstance(v, list):
             for i, element in enumerate(v):
                 try:
-                    # if isinstance(element, dict):
                     flattened.update(
                         flatten_dict(
                             element,
@@ -63,8 +63,6 @@ def flatten_dict(dd, separator="_", prefix=""):
                             prefix + k + separator + str(i) + separator,
                         )
                     )
-                    # else:
-                    #     flattened[prefix + k + separator + str(i)] = element
                 except:
                     logger.warning(
                         f"Serialization Error in {prefix + k + separator + str(i)}"

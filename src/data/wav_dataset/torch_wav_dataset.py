@@ -7,8 +7,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torchaudio  # type: ignore
-
-# from tinytag import TinyTag
 from torch import Tensor
 from torch.utils.data import Dataset
 
@@ -220,33 +218,3 @@ class WAVDataset(Dataset):
 
     def __len__(self) -> int:
         return len(self.data)
-
-
-if __name__ == "__main__":
-    # inputs = torch.randn(1, 3, 224,224)
-    from pathlib import Path
-
-    import pandas as pd
-
-    database_path = Path(
-        "/mnt/nvme_nfs/home/rglitza/databases/DCASE2024/dcase2024t2/dev_data/raw/"
-    )
-    metadata_path = database_path / "bearing/attributes_00.csv"
-
-    metadata = pd.read_csv(metadata_path)
-    wavs = [database_path / file for file in metadata["file_name"]]
-
-    # wav_dataset = WAVDataset(
-    #     wav_files=wavs,
-    #     transforms=None,  # transforms.Compose([transforms.ToTensor()]),
-    #     sample_rate=None,
-    #     check_silence=True,
-    #     window_size=2,
-    #     # overlap=0.5,
-    # )
-
-    # print(len(wav_dataset))
-
-    # for i in range(10):
-    #     print(wav_dataset[i].shape)
-    #     pass

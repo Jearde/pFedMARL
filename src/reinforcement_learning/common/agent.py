@@ -337,7 +337,3 @@ def make_td3_loss_modules(
     }
 
     return torch.nn.ModuleDict(loss_modules), target_updaters, optimizers
-
-
-if __name__ == "__main__":
-    pass

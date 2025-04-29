@@ -1,6 +1,5 @@
 import logging
 
-import lightning as L
 import torch
 from tensordict import TensorDict
 
@@ -9,10 +8,6 @@ from federated_learning.device import Device
 from federated_learning.server import Server
 
 from .base_fl_env import BaseFederatedEnv
-
-# Set the logging level to ERROR to suppress lower-level logs
-logging.getLogger("lightning.pytorch").setLevel(logging.ERROR)
-L.__version__
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -24,7 +19,6 @@ class FedSGDEnv(BaseFederatedEnv):
         self.observation_action_key = "batches"  # losses batches
 
     def _server_agg(self, device: Server, action: torch.Tensor, gradient: bool = False):
-        # L-weighted average of the gradients from the clients
         action_range = self.observation_mapper["server"][self.observation_action_key]
         action = self.state["server"]["observation"][0][
             action_range[0] : action_range[1]

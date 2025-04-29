@@ -1,6 +1,5 @@
 import logging
 
-import lightning as L
 import torch
 from tensordict import TensorDict
 
@@ -9,10 +8,6 @@ from federated_learning.device import Device
 from federated_learning.server import Server
 
 from .base_fl_env import BaseFederatedEnv
-
-# Set the logging level to ERROR to suppress lower-level logs
-logging.getLogger("lightning.pytorch").setLevel(logging.ERROR)
-L.__version__
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -58,13 +53,6 @@ class GlobalLocalFederatedEnv(BaseFederatedEnv):
             )
 
     def _client_agg(self, device: Device, action, global_update):
-        # device.W = device.add_model_update(
-        #     global_update, target=device.W, weight=action
-        # )
-        # device.W = device.add_model_update(
-        #     device.dW, target=device.W, weight=(1 - action)
-        # )
-
         action = 0.5 * (action + 1.0)
 
         if self.use_gradients:
@@ -106,9 +94,8 @@ class GlobalLocalFederatedEnv(BaseFederatedEnv):
             action = action.to(device.model.device)
             if self.use_gradients:
                 device.load_old_model()
-                # device.load_model(self.global_model_old)
             self._client_agg(device, action, self.global_update)
-            device.sync_W_to_active()  # This might also cause problems
+            device.sync_W_to_active()
 
     def _check_nan(self, device, group_name, dev_idx, result_after_agg):
         failed = False
@@ -118,8 +105,6 @@ class GlobalLocalFederatedEnv(BaseFederatedEnv):
             print(
                 f"!!! NaN loss for {group_name} {dev_idx}. Resetting model to old one."
             )
-
-            # device.load_model(self.global_model)
 
             device.load_old_model()
             action = torch.tensor(1.0)

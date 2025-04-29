@@ -171,7 +171,6 @@ class Device:
         feature_size = self.get_feature_dim()
 
         logger.info("Initializing Model")
-        # TODO: No class should be passed, as it leads to logging issues
         self.model = self.config.network.network_class(
             input_dim=feature_size,
             epochs=self.config.trainer.max_epochs,
@@ -216,7 +215,6 @@ class Device:
         ],
     ) -> dict[str, torch.Tensor]:
         # Get model weights and states
-        # W = dict(self.model.state_dict())
         W = {
             k: v.detach().cpu().data.clone() for k, v in self.model.state_dict().items()
         }

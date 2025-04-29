@@ -1,6 +1,5 @@
 import logging
 
-import lightning as L
 import torch
 from tensordict import TensorDict
 from torchrl.envs import ObservationNorm, RewardScaling
@@ -10,10 +9,6 @@ from federated_learning.device import Device
 from federated_learning.server import Server
 
 from .base_env import BaseFLEnv
-
-# Set the logging level to ERROR to suppress lower-level logs
-logging.getLogger("lightning.pytorch").setLevel(logging.ERROR)
-L.__version__
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -185,7 +180,7 @@ class BaseFederatedEnv(BaseFLEnv):
 
         return step_td
 
-    def _get_device_observation(self, device: Device, normalize=False) -> TensorDict:
+    def _get_device_observation(self, device: Device) -> TensorDict:
         client_state = TensorDict()
 
         client_losses = torch.stack(
@@ -193,9 +188,7 @@ class BaseFederatedEnv(BaseFLEnv):
         ).mean()
 
         if isinstance(device, Client):
-            # client_state["device_type"] = 0
             # Cosine similarity between client and server model updates
-            # L2 norm between client and server model updates
             client_state["similarities"] = [
                 server.get_similarity_and_norm(
                     source_dict=device.dW,
@@ -204,6 +197,7 @@ class BaseFederatedEnv(BaseFLEnv):
                 )[0].mean()
                 for server in self.servers
             ]
+            # L2 norm between client and server model updates
             client_state["norms"] = [
                 server.get_similarity_and_norm(
                     source_dict=device.W,
@@ -218,16 +212,10 @@ class BaseFederatedEnv(BaseFLEnv):
             ).mean()
 
         elif isinstance(device, Server):
-            # client_state["device_type"] = 1
             # Validation loss of clients
             client_state["losses"] = [
                 client.validation_loss_after_training for client in self.clients
             ]
-            if normalize:
-                # Softmax of the validation losses
-                client_state["losses"] = torch.functional.F.softmax(
-                    client_state["losses"], dim=0
-                )
             # Cosine similarity between client and server model updates
             client_state["similarities"] = [
                 device.get_similarity_and_norm(
@@ -237,8 +225,6 @@ class BaseFederatedEnv(BaseFLEnv):
                 )[0].mean()
                 for client in self.clients
             ]
-            # L2 norm of the client update.
-            pass
             # L2 norm between client and server models
             client_state["norms"] = [
                 device.get_similarity_and_norm(
@@ -252,12 +238,6 @@ class BaseFederatedEnv(BaseFLEnv):
             client_state["batches"] = [
                 len(client.data_module.train_dataloader()) for client in self.clients
             ]
-
-        if normalize:
-            client_losses = (
-                client_losses if client_losses != 0 else result[0]["val/loss"]
-            )
-            client_state["loss"] = client_state["loss"] / client_losses
 
         # Flatten client state into single vector
         client_state_flat = torch.cat(

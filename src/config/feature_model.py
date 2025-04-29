@@ -11,27 +11,6 @@ class AudioParams(BaseModel):
     use_dali: bool = True
 
 
-class FrequencyAugmentationModel(BaseModel):
-    use: bool = False
-    fmin: float = 0.0
-    fmax: float = 8000.0
-
-
-class TimeAugmentationModel(BaseModel):
-    use: bool = False
-    time_stretch: float = 0.05
-    pitch_shift: float = 0.05
-    noise_level: float = 0.05
-
-
-class FeatureAugmentationModel(BaseModel):
-    percentage: float = 0
-    label_index: Union[int, None] = None
-    frequency: FrequencyAugmentationModel = FrequencyAugmentationModel()
-    time: TimeAugmentationModel = TimeAugmentationModel()
-
-
-# Used
 class FeatureModel(BaseModel):
     sr: int = 16000
     n_mels: int = 128
@@ -46,4 +25,3 @@ class FeatureModel(BaseModel):
     channel: int = 1
     power: float = 2.0
     audio_params: AudioParams = AudioParams()
-    augmentation: FeatureAugmentationModel = FeatureAugmentationModel()

@@ -142,31 +142,3 @@ class DCASEAudioDataset(torch.utils.data.Dataset):
             ],
             dtype=torch.int64,
         )
-
-
-if __name__ == "__main__":
-    from pathlib import Path
-
-    root = Path("/mnt/nvme_nfs/home/rglitza/databases/DCASE2024")
-    dataset_name = "DCASE2024T2"
-    section_keyword = "section"
-    machine_type = "ToyCar"
-    section_ids = ["00"]
-    data_type = "dev"
-    train = True
-
-    dataset = DCASEAudioDataset(
-        root=root,
-        dataset_name=dataset_name,
-        section_keyword=section_keyword,
-        machine_type=machine_type,
-        section_ids=section_ids,
-        data_type=data_type,
-        train=train,
-    )
-
-    print(len(dataset))
-
-    for i in range(10):
-        print(dataset[i])
-        pass

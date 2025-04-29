@@ -35,8 +35,6 @@ class Client(Device):
         self.data_module.setup("test")
 
     def fit(self, checkpoint: Path | None = None, fl_mode: bool = True):
-        # logger.info("Start training")
-
         if fl_mode:
             # Get loss before training
             result = self.trainer.validate(

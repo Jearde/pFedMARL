@@ -1,10 +1,9 @@
 from enum import Enum
-from pathlib import Path
 
 import lightning as L
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
-from config.data_loader_model import DATA_FOLDER, DataLoaderModel
+from config.data_loader_model import DataLoaderModel
 from data.dcase_task_2.dcase_multi_dataset import DCASEMultiDataset
 from data.dcase_task_2.dcase_pydentic import DCASEModel, MachineModel, MachineType
 
@@ -44,11 +43,6 @@ class DatasetModel(BaseModel):
         else:
             raise ValueError(f"Unsupported dataset: {dataset_class}")
 
-    # @field_validator("dataset_class", mode="after")
-    # @classmethod
-    # def transform(cls, raw: str) -> L.LightningDataModule:
-    #     return get_class_from_str(raw)
-
     def dataset_class_object(self) -> L.LightningDataModule:
         return get_class_from_str(self.dataset_class)
 
@@ -71,11 +65,6 @@ class SuperDatasetModel(BaseModel):
     create_dataset: bool = False
 
 
-class PreProcessingModel(BaseModel):
-    use_preprocessing: bool = False
-    save_dir: Path = DATA_FOLDER / Path("PreProcessed")
-
-
 class DatasetModels(BaseModel):
     datasets: list[DatasetModel] = [DatasetModel()]
     datasets: list[DatasetModel] = [
@@ -90,30 +79,6 @@ class DatasetModels(BaseModel):
                     MachineModel(name=MachineType.gearbox, data_type="dev"),
                     MachineModel(name=MachineType.slider, data_type="dev"),
                     MachineModel(name=MachineType.valve, data_type="dev"),
-                    # # Evaluation
-                    # MachineModel(name=MachineType.ToyDrone, data_type="eval"),
-                    # MachineModel(name=MachineType.ToyNscale, data_type="eval"),
-                    # MachineModel(name=MachineType.ToyTank, data_type="eval"),
-                    # MachineModel(name=MachineType.Vacuum, data_type="eval"),
-                    # MachineModel(name=MachineType.bandsaw, data_type="eval"),
-                    # MachineModel(name=MachineType.grinder, data_type="eval"),
-                    # MachineModel(name=MachineType.shaker, data_type="eval"),
-                    # MachineModel(
-                    #     name=MachineType.Printer3D, year=2024, data_type="eval"
-                    # ),
-                    # MachineModel(
-                    #     name=MachineType.AirCompressor, year=2024, data_type="eval"
-                    # ),
-                    # MachineModel(name=MachineType.Scanner, year=2024, data_type="eval"),
-                    # MachineModel(
-                    #     name=MachineType.ToyCircuit, year=2024, data_type="eval"
-                    # ),
-                    # MachineModel(
-                    #     name=MachineType.HoveringDrone, year=2024, data_type="eval"
-                    # ),
-                    # MachineModel(
-                    #     name=MachineType.HairDryer, year=2024, data_type="eval"
-                    # ),
                 ],
                 train=True,
             ),
@@ -129,40 +94,11 @@ class DatasetModels(BaseModel):
                     MachineModel(name=MachineType.gearbox, data_type="dev"),
                     MachineModel(name=MachineType.slider, data_type="dev"),
                     MachineModel(name=MachineType.valve, data_type="dev"),
-                    # Evaluation
-                    # MachineModel(name=MachineType.ToyDrone, data_type="eval"),
-                    # MachineModel(name=MachineType.ToyNscale, data_type="eval"),
-                    # MachineModel(name=MachineType.ToyTank, data_type="eval"),
-                    # MachineModel(name=MachineType.Vacuum, data_type="eval"),
-                    # MachineModel(name=MachineType.bandsaw, data_type="eval"),
-                    # MachineModel(name=MachineType.grinder, data_type="eval"),
-                    # MachineModel(name=MachineType.shaker, data_type="eval"),
-                    # MachineModel(
-                    #     name=MachineType.Printer3D, year=2024, data_type="eval"
-                    # ),
-                    # MachineModel(
-                    #     name=MachineType.AirCompressor, year=2024, data_type="eval"
-                    # ),
-                    # MachineModel(name=MachineType.Scanner, year=2024, data_type="eval"),
-                    # MachineModel(
-                    #     name=MachineType.ToyCircuit, year=2024, data_type="eval"
-                    # ),
-                    # MachineModel(
-                    #     name=MachineType.HoveringDrone, year=2024, data_type="eval"
-                    # ),
-                    # MachineModel(
-                    #     name=MachineType.HairDryer, year=2024, data_type="eval"
-                    # ),
                 ],
                 train=False,
             ),
             split_type=TrainType.test,
         ),
-        # DatasetModel(
-        #     dataset_class=DatasetType.SONYCModel,
-        #     dataset_params=SONYCModel(type=None),
-        #     split_type=TrainType.keep,
-        # ),
     ]
     data_loader_settings: DataLoaderModel = DataLoaderModel()
 

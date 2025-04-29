@@ -7,7 +7,6 @@ import torch
 from torch.utils.data import DataLoader
 
 from data.dali_loader.dali_wav_loader import DaliAudioPipeline
-from src.data.dali_loader.dali_numpy_external_loader import DaliNumpyExternalPipeline
 
 logger = logging.getLogger(__name__)
 
@@ -120,8 +119,6 @@ class BaseDataModule(L.LightningDataModule):
 
         if dataset.meta["file"].iloc[0].endswith(".wav"):
             pipeline_class = DaliAudioPipeline
-        elif dataset.meta["file"].iloc[0].endswith(".npy"):
-            pipeline_class = DaliNumpyExternalPipeline
         else:
             logger.error(f"Unknown file format: {datasets[0].meta['file'][0]}")
             return None
