@@ -1,0 +1,298 @@
+addons:
+  algorithms: []
+callback:
+  async_logging: false
+  save_model: false
+  verbose: false
+config_path: null
+data:
+  data_loader_settings:
+    num_workers: 0
+    prefetch_factor: null
+    prepare_data_per_node: false
+  datasets:
+  - dataset_class: DCASEMultiDataset
+    dataset_params:
+      auto_download: true
+      machines:
+      - data_type: dev
+        name: ToyCar
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: ToyTrain
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: bearing
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: fan
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: gearbox
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: slider
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: valve
+        sections:
+        - 0
+        year: 2023
+      root_dir: /mnt/data/DCASE2024
+      task: T2
+      train: true
+    split_type: fit
+  - dataset_class: DCASEMultiDataset
+    dataset_params:
+      auto_download: true
+      machines:
+      - data_type: dev
+        name: ToyCar
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: ToyTrain
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: bearing
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: fan
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: gearbox
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: slider
+        sections:
+        - 0
+        year: 2023
+      - data_type: dev
+        name: valve
+        sections:
+        - 0
+        year: 2023
+      root_dir: /mnt/data/DCASE2024
+      task: T2
+      train: false
+    split_type: test
+  preprocessor:
+    save_dir: /mnt/data/PreProcessed
+    use_preprocessing: false
+  super_dataset:
+    create_dataset: false
+    label_names:
+    - machine
+    - target
+    - anomaly
+    merge_labels:
+      anomaly:
+        columns:
+        - y_true
+        logits: false
+      class:
+        columns:
+        - machine
+        logits: false
+feature:
+  audio_params:
+    audio_slice_length: null
+    mono: true
+    target_audio_length: 10
+    target_sr: 16000
+    use_dali: true
+  augmentation:
+    frequency:
+      fmax: 8000.0
+      fmin: 0.0
+      use: false
+    label_index: null
+    percentage: 0.0
+    time:
+      noise_level: 0.05
+      pitch_shift: 0.05
+      time_stretch: 0.05
+      use: false
+  channel: 1
+  fmax: 8000.0
+  fmin: 0.0
+  frame_hop_length: 0.1
+  frame_win_length: 1.0
+  hop_length: 512
+  n_fft: 1024
+  n_frames: 5
+  n_mels: 128
+  power: 2.0
+  sr: 16000
+  win_length: null
+fl:
+  client_key: machine
+  cluster_skew: false
+  max_rounds: 500
+  multiple_datasets: false
+  num_clients: 7
+  uneven_distribution: 0.5
+  use_gradients: false
+logger:
+  dagshub_owner: ''
+  dagshub_repo: ''
+  dagshub_token: ''
+  dagshub_use: false
+  dvc_dir: /mnt/nvme_nfs/log_debug/dvc
+  dvc_use: false
+  log_dir: /mnt/nvme_nfs/log_debug/logging
+  logger_name: FL-DRL-Aggregation
+  mlflow_log_model: false
+  mlflow_uri: file:///mnt/nvme_nfs/log_debug/mlflow
+  mlflow_use: false
+  model_dir: /mnt/nvme_nfs/log_debug/export
+  optuna_store: /mnt/nvme_nfs/log_debug/optuna/optuna.log
+  study_name: fl_maddpg_mse
+  tensorboard_dir: /mnt/nvme_nfs/log_debug/tensorboard
+  tensorboard_use: true
+network:
+  checkpoint_dir: null
+  heads:
+    classifiers: []
+  network_class: AEModel
+  network_params:
+    backbone_checkpoint: null
+    batch_size: 32
+    lr: 0.001
+    module_params:
+      block_size: 128
+      fc_units: 256
+      latent_dim: 64
+rl:
+  algorithm_config:
+    agent_config:
+      annealing_num_steps: 90
+      centralised_critic: true
+      centralized_policy: false
+      depth_critic: 2
+      depth_policy: 2
+      end_value: 0.1
+      init_value: 0.25
+      noise_type: AdditiveGaussian
+      num_cells_critic: 256
+      num_cells_policy: 256
+      share_parameters_critic: true
+      share_parameters_policy: false
+    batch_size: 8
+    buffer_config:
+      alpha: 0.7
+      beta: 0.5
+      device: cpu
+      memory_size: 100000
+      prb: true
+      prefetch: 0
+      train_batch_size: 8
+    collections_per_call: 1
+    collector_config:
+      device: cpu
+      env_device: cpu
+      frames_per_batch: 1
+      init_random_frames: 0
+      max_frames_per_traj: null
+      policy_device: cpu
+      storing_device: cpu
+      total_frames: -1
+    initial_collect_steps: 1
+    loss_config:
+      actor_lr: 0.0004
+      actor_weight_decay: 0.0
+      critic_lr: 0.003
+      critic_weight_decay: 0.01
+      gamma: 0.99
+      lmbda: null
+      polyak_tau: 0.45
+    max_grad_norm: 10.0
+    perform_validation: false
+    policy_update_delay: 3
+    test_freq: 200
+    train_freq: 1.0
+  algorithm_name: td3
+  callback_config:
+    async_logging: false
+    save_model: false
+    verbose: false
+  environment_config:
+    batch_size: null
+    device: cpu
+    enable_checks: false
+    fast: true
+    max_clients: null
+    max_global_steps: 0
+    max_servers: 1
+    norm_obs_reward: false
+  environment_name: maddpg_fed_sgd
+  logger_config:
+    dagshub_owner: ''
+    dagshub_repo: ''
+    dagshub_token: ''
+    dagshub_use: false
+    dvc_dir: /mnt/nvme_nfs/log_debug/dvc
+    dvc_use: false
+    log_dir: /mnt/nvme_nfs/log_debug/logging
+    logger_name: RL-FL-Experiments
+    mlflow_log_model: false
+    mlflow_uri: file:///mnt/nvme_nfs/log_debug/mlflow
+    mlflow_use: false
+    model_dir: /mnt/nvme_nfs/log_debug/export
+    optuna_store: /mnt/nvme_nfs/log_debug/optuna/optuna.log
+    study_name: fl_td3_maddpg_mse_v3
+    tensorboard_dir: /mnt/nvme_nfs/log_debug/tensorboard
+    tensorboard_use: true
+  trainer_config:
+    accelerator: auto
+    benchmark: null
+    deterministic: false
+    devices: 1
+    enable_checkpointing: false
+    enable_progress_bar: true
+    fast_dev_run: false
+    log_every_n_steps: 1
+    max_epochs: 200
+    num_nodes: 1
+    precision: 32
+    profiler: null
+    reload_dataloaders_every_n_epochs: 1
+seed: 42
+server:
+  aggregator_config:
+    aggregator: FedAvgAggregator
+trainer:
+  accelerator: auto
+  benchmark: null
+  deterministic: false
+  devices: 1
+  enable_checkpointing: true
+  enable_progress_bar: true
+  fast_dev_run: false
+  log_every_n_steps: 2
+  max_epochs: 1
+  num_nodes: 1
+  precision: 32
+  profiler: null
+  reload_dataloaders_every_n_epochs: 0

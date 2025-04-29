@@ -133,6 +133,6 @@ core
 .data
 .logs
 .cache
-.config
+.configs
 .experiments
 .export
